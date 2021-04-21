@@ -1,0 +1,35 @@
+- table:
+    schema: public
+    name: users
+  configuration:
+    custom_root_fields: {}
+    custom_column_names:
+      uuid: id # required since react-admin expects a field called id: https://marmelab.com/react-admin/FAQ.html#can-i-have-custom-identifiersprimary-keys-for-my-resources
+  select_permissions:
+  - role: user
+    permission:
+      columns:
+      - uuid
+      - first_name
+      - last_name
+      - email
+      - created_at
+      - updated_at
+      filter:
+        email:
+          _eq: X-Hasura-User-Id
+      allow_aggregations: true # required for ApolloClient in react-admin
+  update_permissions:
+  - role: user
+    permission:
+      columns:
+      - uuid
+      - email
+      - first_name
+      - last_name
+      - created_at
+      - updated_at
+      filter:
+        email:
+          _eq: X-Hasura-User-Id
+      check:

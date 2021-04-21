@@ -1,0 +1,56 @@
+version: "3.7"
+
+volumes:
+  database-data-admin: # named volume for easier docker-compose management
+
+services:
+  admin-database:
+    container_name: "admin-database"
+    image: postgres:12.2-alpine
+    volumes:
+      - ./postgres/init:/docker-entrypoint-initdb.d/ # postgres image runs SQL files in this directory
+      - database-data-admin:/var/lib/postgresql/data/ # persist data even if container shuts down
+    env_file:
+      - .env
+    expose:
+      - 5432
+
+  admin-hasura:
+    container_name: "admin-hasura"
+    image: hasura/graphql-engine:latest.cli-migrations-v2
+    depends_on:
+      - admin-database
+    volumes:
+      - ./hasura/metadata:/hasura-metadata
+      - ./hasura/migrations:/hasura-migrations
+    restart: always
+    env_file:
+      - .env
+    environment:
+      HASURA_GRAPHQL_DATABASE_URL: postgres://${HASURA_USER}:${HASURA_USER_PASSWORD}@admin-database:5432/${POSTGRES_DB}
+      HASURA_GRAPHQL_ADMIN_SECRET: 282b1c2a-e633-4a95-8072-14b2f1a32883
+      HASURA_GRAPHQL_ENABLE_CONSOLE: "true"
+      # HASURA_GRAPHQL_UNAUTHORIZED_ROLE needed so login page can work without a valid token
+      HASURA_GRAPHQL_UNAUTHORIZED_ROLE: anonymous
+      HASURA_GRAPHQL_JWT_SECRET: '{"type":"RS256","jwk_url": "https://www.googleapis.com/service_accounts/v1/jwk/securetoken@system.gserviceaccount.com", "audience": "admin-59264", "issuer": "https://securetoken.google.com/admin-59264"}'
+      HASURA_GRAPHQL_LOG_LEVEL: debug
+      HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
+    ports:
+      - 8081:8080
+    expose:
+      - 8080
+
+  admin-frontend:
+    container_name: "admin-frontend"
+    build:
+      context: ./react-admin
+    depends_on:
+      - admin-hasura
+    volumes:
+      - ./react-admin/:/usr/src/app
+    restart: on-failure
+    tty: true # required for react-scripts to work in Docker
+    environment:
+      REACT_APP_HASURA_URL: 'http://localhost:8081/v1/graphql'
+    ports:
+      - 3000:3000

@@ -1,0 +1,11 @@
+#!/bin/sh
+# script/bootstrap: Resolve all dependencies so the app is usable once the script completes.
+
+cd "$(dirname "$0")/.."
+set -e
+
+if ! [ -x "$(command -v docker)" ]; then
+    curl -fsSL https://get.docker.com/ | sh
+fi
+
+docker-compose run --rm admin-frontend npm install --no-audit
