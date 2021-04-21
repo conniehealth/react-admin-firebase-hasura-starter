@@ -2,8 +2,12 @@
 This is a starter project that provides a quick to setup admin interface for data in a Postgres database. It relies on [react-admin](https://marmelab.com/react-admin/), [Firebase authentication](https://firebase.google.com/products/auth), and [Hasura](https://hasura.io/docs/latest/graphql/core/getting-started/index.html) to provide significant functionality with minimal setup. The project was originally inspired by [this project](https://github.com/dvasdekis/react-admin-hasura-firebase) but has had significant changes to how migrations are handled and how react-admin connects to Hasura.
 
 ## Setting Up
-To get started, run `./script/bootstrap` to install dependencies. <br />
-Then run `./script/server` to run the [admin frontend](http://localhost:3000/) and the [Hasura console](http://localhost:8081/console).
+* Copy `.env-example` to `.env`
+* Update values between any `<>` brackets in `docker-compose.yaml`
+* Set your Firebase config values in `react-admin/src/App.js`
+* Deploy your [Firebase auth function](#Firebase-(authentication))
+* Run `./script/bootstrap` to install dependencies. <br />
+* Run `./script/server` to run the [admin frontend](http://localhost:3000/) and the [Hasura console](http://localhost:8081/console).
 <br /><br />
 You will likely want to create a user for yourself in the database. In one terminal session, make sure you have the server running with `./script/server`. Then, in another terminal session, you can connect to the database with
 ```

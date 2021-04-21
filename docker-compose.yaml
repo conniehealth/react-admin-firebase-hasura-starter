@@ -28,11 +28,11 @@ services:
       - .env
     environment:
       HASURA_GRAPHQL_DATABASE_URL: postgres://${HASURA_USER}:${HASURA_USER_PASSWORD}@admin-database:5432/${POSTGRES_DB}
-      HASURA_GRAPHQL_ADMIN_SECRET: 282b1c2a-e633-4a95-8072-14b2f1a32883
+      HASURA_GRAPHQL_ADMIN_SECRET: <SET A SECRET VALUE>
       HASURA_GRAPHQL_ENABLE_CONSOLE: "true"
       # HASURA_GRAPHQL_UNAUTHORIZED_ROLE needed so login page can work without a valid token
       HASURA_GRAPHQL_UNAUTHORIZED_ROLE: anonymous
-      HASURA_GRAPHQL_JWT_SECRET: '{"type":"RS256","jwk_url": "https://www.googleapis.com/service_accounts/v1/jwk/securetoken@system.gserviceaccount.com", "audience": "admin-59264", "issuer": "https://securetoken.google.com/admin-59264"}'
+      HASURA_GRAPHQL_JWT_SECRET: '{"type":"RS256","jwk_url": "https://www.googleapis.com/service_accounts/v1/jwk/securetoken@system.gserviceaccount.com", "audience": "<firebase-project-id>", "issuer": "https://securetoken.google.com/<firebase-project-id>"}'
       HASURA_GRAPHQL_LOG_LEVEL: debug
       HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
     ports:
